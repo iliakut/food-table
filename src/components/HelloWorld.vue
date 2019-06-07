@@ -2,10 +2,20 @@
   <v-container>
     <h1>Table UI</h1>
       <v-data-table
-                    :headers="headers"
-                    :items="desserts"
+        :headers="headers"
+        :items="desserts"
+        select-all
+        v-model="selected"
+        item-key="name"
       >
         <template v-slot:items="props">
+          <td>
+            <v-checkbox
+              v-model="props.selected"
+              primary
+              hide-details
+            ></v-checkbox>
+          </td>
           <td>{{ props.item.name }}</td>
           <td class="text-xs-left">{{ props.item.calories }}</td>
           <td class="text-xs-left ">{{ props.item.fat }}</td>
@@ -19,6 +29,7 @@
             >
               delete
             </v-icon>
+            Delete
           </td>
         </template>
       </v-data-table>
@@ -28,6 +39,7 @@
 <script>
   export default {
     data: () => ({
+      selected: [],
       headers: [
         {
           text: 'Dessert (100g serving)',
