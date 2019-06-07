@@ -23,13 +23,16 @@
           <td class="text-xs-left">{{ props.item.protein }}</td>
           <td class="text-xs-left">{{ props.item.iron }}</td>
           <td class="text-xs-left">
-            <v-icon
-              small
-              @click="deleteItem(props.item)"
-            >
-              delete
-            </v-icon>
-            Delete
+            <v-btn flat small color="error"
+                   class="text-none"
+                   @click="deleteItem(props.item)">
+              <v-icon
+                small
+              >
+                delete
+              </v-icon>
+               Delete
+            </v-btn>
           </td>
         </template>
       </v-data-table>
