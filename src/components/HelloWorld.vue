@@ -1,8 +1,13 @@
 <template>
   <v-container>
     <h1>Table UI</h1>
+    <b>Group by:</b>
+    <v-btn color="primary"
+           small
+           v-for="item in headers"
+           :key="item.text" v-if="item.text !== ''">{{ item.text }}</v-btn>
       <v-data-table
-        :headers="headers"
+        :headers="filteredHeaders"
         :items="desserts"
         select-all
         v-model="selected"
@@ -17,14 +22,14 @@
             ></v-checkbox>
           </td>
           <td>{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.calories }}</td>
-          <td class="text-xs-left ">{{ props.item.fat }}</td>
-          <td class="text-xs-left">{{ props.item.carbs }}</td>
-          <td class="text-xs-left">{{ props.item.protein }}</td>
-          <td class="text-xs-left">{{ props.item.iron }}</td>
+          <td class="text-xs-left" v-if="choosedHeaders.includes('calories')">{{ props.item.calories }}</td>
+          <td class="text-xs-left" v-if="choosedHeaders.includes('fat')">{{ props.item.fat }}</td>
+          <td class="text-xs-left" v-if="choosedHeaders.includes('carbs')">{{ props.item.carbs }}</td>
+          <td class="text-xs-left" v-if="choosedHeaders.includes('protein')">{{ props.item.protein }}</td>
+          <td class="text-xs-left" v-if="choosedHeaders.includes('iron')">{{ props.item.iron }}</td>
           <td class="text-xs-left">
             <v-btn flat small color="error"
-                   class="text-none"
+                   class="text-none hideButton"
                    @click="deleteItem(props.item)">
               <v-icon
                 small
@@ -54,7 +59,7 @@
         { text: 'Carbs (g)', value: 'carbs' },
         { text: 'Protein (g)', value: 'protein' },
         { text: 'Iron (%)', value: 'iron' },
-        { text: '', value: ''}
+        { text: '', value: '', sortable: false}
       ],
       desserts: [
         {
@@ -137,11 +142,50 @@
           protein: 7,
           iron: '6%'
         }
-      ]
-    })
+      ],
+      choosedHeaders: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron', '']
+    }),
+    computed: {
+      filteredHeaders: function() {
+        return this.filterHeaders();
+      },
+      defaultHeaders: function() {
+        return this.headers.map((item) => { return item.value })
+      }
+    },
+    methods: {
+      filterHeaders: function() {
+        let filteredArr = [];
+        for (let i = 0; i < this.headers.length; i++) {
+          if (this.choosedHeaders.includes(this.headers[i].value)) {
+            filteredArr.push(this.headers[i]);
+          }
+        }
+        return filteredArr;
+      },
+      filterComponents: function() {
+        let filteredArr = [];
+        for (let i = 0; i < this.headers.length; i++) {
+          if (this.choosedHeaders.includes(this.headers[i].value)) {
+            filteredArr.push(this.headers[i]);
+          }
+        }
+      }
+    }
   }
 </script>
 
 <style>
-
+  .hideButton {
+    visibility: hidden;
+    transition: 0s !important;
+    -webkit-transition: 0s !important;
+  }
+  .hideButton > * {
+    transition: 0s !important;
+    -webkit-transition: 0s !important;
+  }
+  tr:hover .hideButton {
+    visibility: visible
+  }
 </style>
