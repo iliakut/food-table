@@ -1,11 +1,44 @@
 <template>
   <v-container>
     <h1>Table UI</h1>
-    <b>Group by:</b>
-    <v-btn color="primary"
-           small
-           v-for="item in headers"
-           :key="item.text" v-if="item.text !== ''">{{ item.text }}</v-btn>
+    <v-layout row wrap align-center justify-start>
+      <b>Group by:</b>
+      <v-flex v-for="item in headersData" :key="item.text" shrink>
+        <v-btn color="primary"
+               small
+               v-if="item.text !== ''">{{ item.text }}</v-btn>
+      </v-flex>
+      <v-spacer></v-spacer>
+      <v-flex>
+        <v-select
+          v-model="selected"
+          :items="headersWithoutLastItem"
+          label="0 columns selected"
+          multiple
+          :single-line="true">
+          <template v-slot:prepend-item>
+            <v-list-tile
+              ripple
+              @click="selectAll"
+            >
+              <v-list-tile-action>
+                <v-icon color="indigo darken-4">{{ selecrAllIcon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Select All</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-divider class="mt-2"></v-divider>
+          </template>
+          <template v-slot:selection="{ item, index }">
+            <span
+            v-if="index === 0">
+              {{ selected.length }} columns selected
+            </span>
+        </template>
+        </v-select>
+      </v-flex>
+    </v-layout>
       <v-data-table
         :headers="filteredHeaders"
         :items="desserts"
@@ -21,19 +54,17 @@
               hide-details
             ></v-checkbox>
           </td>
-          <td>{{ props.item.name }}</td>
-          <td class="text-xs-left" v-if="choosedHeaders.includes('calories')">{{ props.item.calories }}</td>
-          <td class="text-xs-left" v-if="choosedHeaders.includes('fat')">{{ props.item.fat }}</td>
-          <td class="text-xs-left" v-if="choosedHeaders.includes('carbs')">{{ props.item.carbs }}</td>
-          <td class="text-xs-left" v-if="choosedHeaders.includes('protein')">{{ props.item.protein }}</td>
-          <td class="text-xs-left" v-if="choosedHeaders.includes('iron')">{{ props.item.iron }}</td>
+          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('name')">{{ props.item.name }}</td>
+          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('calories')">{{ props.item.calories }}</td>
+          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('fat')">{{ props.item.fat }}</td>
+          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('carbs')">{{ props.item.carbs }}</td>
+          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('protein')">{{ props.item.protein }}</td>
+          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('iron')">{{ props.item.iron }}</td>
           <td class="text-xs-left">
             <v-btn flat small color="error"
                    class="text-none hideButton"
                    @click="deleteItem(props.item)">
-              <v-icon
-                small
-              >
+              <v-icon small>
                 delete
               </v-icon>
                Delete
@@ -47,8 +78,7 @@
 <script>
   export default {
     data: () => ({
-      selected: [],
-      headers: [
+      headersData: [
         {
           text: 'Dessert (100g serving)',
           align: 'left',
@@ -143,33 +173,38 @@
           iron: '6%'
         }
       ],
-      choosedHeaders: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron', '']
+      selected: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron']
     }),
     computed: {
       filteredHeaders: function() {
         return this.filterHeaders();
       },
-      defaultHeaders: function() {
-        return this.headers.map((item) => { return item.value })
+      defaultHeadersText: function() {
+        return this.headersData.map((item) => { return item.text })
+      },
+      chosedHeadersWithDeleteColumn: function() {
+        return this.selected.concat(['']);
+      },
+      headersWithoutLastItem: function() {
+        return this.headersData.slice(0, this.headersData.length - 1);
+      },
+      selecrAllIcon () {
+        if (this.selected.length < 6) return 'check';
+        else return 'close';
       }
     },
     methods: {
       filterHeaders: function() {
         let filteredArr = [];
-        for (let i = 0; i < this.headers.length; i++) {
-          if (this.choosedHeaders.includes(this.headers[i].value)) {
-            filteredArr.push(this.headers[i]);
+        for (let i = 0; i < this.headersData.length; i++) {
+          if (this.chosedHeadersWithDeleteColumn.includes(this.headersData[i].value)) {
+            filteredArr.push(this.headersData[i]);
           }
         }
         return filteredArr;
       },
-      filterComponents: function() {
-        let filteredArr = [];
-        for (let i = 0; i < this.headers.length; i++) {
-          if (this.choosedHeaders.includes(this.headers[i].value)) {
-            filteredArr.push(this.headers[i]);
-          }
-        }
+      selectAll: function() {
+        this.selected = 1;
       }
     }
   }
