@@ -90,7 +90,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn flat>Cancel</v-btn>
-                  <v-btn color="error" flat @click="deleteDesert(props.item)">Confirm</v-btn>
+                  <v-btn color="error" flat @click="deleteDeserts(props.item)">Confirm</v-btn>
                 </v-card-actions>
               </v-card>
             </v-menu>
@@ -99,7 +99,8 @@
       </v-data-table>
     <v-layout justify-end>
       <v-btn small
-             color="error text-none">
+             color="error text-none"
+             @click="deleteDeserts(selectedDeserts)">
         Delete ({{ selectedDeserts.length }})
       </v-btn>
     </v-layout>
@@ -245,12 +246,19 @@
         let deletedElem = this.selected.splice(index, 1);
         this.selected.unshift(deletedElem[0]);
       },
-      deleteDesert(desert) {
-        let indexOfDesert = this.desserts.indexOf(desert);
-        this.desserts.splice(indexOfDesert, 1);
+      deleteDeserts(desert) {
+        if (toString.call(desert) === '[object Array]') {
+          for (let i = 0; i < desert.length; i++) {
+            let currentDesertIndex = this.desserts.indexOf(desert[i]);
+            this.desserts.splice(currentDesertIndex, 1);
+          }
+        }
+        else {
+          let indexOfDesert = this.desserts.indexOf(desert);
+          this.desserts.splice(indexOfDesert, 1);
+        }
       }
-    },
-    watch: {}
+    }
   }
 </script>
 
