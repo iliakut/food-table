@@ -66,8 +66,7 @@
           <td class="text-xs-left" v-if="selected.includes('protein')">{{ props.item.protein }}</td>
           <td class="text-xs-left" v-if="selected.includes('iron')">{{ props.item.iron }}</td>
           <td class="text-xs-left">
-            <v-menu
-            >
+            <v-menu>
               <template v-slot:activator="{ on }">
                 <v-btn flat small color="error"
                        class="text-none hideButton"
@@ -128,6 +127,7 @@
 </template>
 
 <script>
+
   export default {
     data: () => ({
       headersData: [
@@ -276,7 +276,7 @@
           let indexOfDesert = this.desserts.indexOf(desert);
           this.desserts.splice(indexOfDesert, 1);
         }
-      }
+      },
     }
   }
 </script>
