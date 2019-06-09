@@ -98,11 +98,30 @@
         </template>
       </v-data-table>
     <v-layout justify-end>
-      <v-btn small
-             color="error text-none"
-             @click="deleteDeserts(selectedDeserts)">
-        Delete ({{ selectedDeserts.length }})
-      </v-btn>
+      <v-menu
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn small
+                 color="error text-none"
+                 v-on="on">
+            Delete ({{ selectedDeserts.length }})
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title>
+                Are you sure you want to delete selected items?
+              </v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat>Cancel</v-btn>
+            <v-btn color="error" flat @click="deleteDeserts(selectedDeserts)">Confirm</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
     </v-layout>
     <hr>
   </v-container>
