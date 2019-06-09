@@ -22,7 +22,7 @@
               @click="selectAll"
             >
               <v-list-tile-action>
-                <v-icon color="indigo darken-4">{{ selecrAllIcon }}</v-icon>
+                <v-icon color="indigo darken-4">{{ selectAllIcon }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>Select All</v-list-tile-title>
@@ -40,7 +40,7 @@
       </v-flex>
     </v-layout>
       <v-data-table
-        :headers="filteredHeaders"
+        :headers="selectedObj"
         :items="desserts"
         select-all
         v-model="selected"
@@ -54,12 +54,12 @@
               hide-details
             ></v-checkbox>
           </td>
-          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('name')">{{ props.item.name }}</td>
-          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('calories')">{{ props.item.calories }}</td>
-          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('fat')">{{ props.item.fat }}</td>
-          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('carbs')">{{ props.item.carbs }}</td>
-          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('protein')">{{ props.item.protein }}</td>
-          <td class="text-xs-left" v-if="chosedHeadersWithDeleteColumn.includes('iron')">{{ props.item.iron }}</td>
+          <td class="text-xs-left" v-if="selected.includes('name')">{{ props.item.name }}</td>
+          <td class="text-xs-left" v-if="selected.includes('calories')">{{ props.item.calories }}</td>
+          <td class="text-xs-left" v-if="selected.includes('fat')">{{ props.item.fat }}</td>
+          <td class="text-xs-left" v-if="selected.includes('carbs')">{{ props.item.carbs }}</td>
+          <td class="text-xs-left" v-if="selected.includes('protein')">{{ props.item.protein }}</td>
+          <td class="text-xs-left" v-if="selected.includes('iron')">{{ props.item.iron }}</td>
           <td class="text-xs-left">
             <v-btn flat small color="error"
                    class="text-none hideButton"
@@ -176,37 +176,39 @@
       selected: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron']
     }),
     computed: {
-      filteredHeaders: function() {
+      selectedObj: function() {
         return this.filterHeaders();
-      },
-      defaultHeadersText: function() {
-        return this.headersData.map((item) => { return item.text })
-      },
-      chosedHeadersWithDeleteColumn: function() {
-        return this.selected.concat(['']);
       },
       headersWithoutLastItem: function() {
         return this.headersData.slice(0, this.headersData.length - 1);
       },
-      selecrAllIcon () {
+      selectAllIcon () {
         if (this.selected.length < 6) return 'check';
         else return 'close';
       }
     },
     methods: {
       filterHeaders: function() {
-        let filteredArr = [];
-        for (let i = 0; i < this.headersData.length; i++) {
-          if (this.chosedHeadersWithDeleteColumn.includes(this.headersData[i].value)) {
-            filteredArr.push(this.headersData[i]);
+        let selectedHeadersWithDeleteColumn = this.selected.concat(['']);
+        let filteredArrofObj = [];
+        for (let i = 0; i < selectedHeadersWithDeleteColumn.length; i++) {
+          for (let j = 0; j < this.headersData.length; j++) {
+            if (selectedHeadersWithDeleteColumn[i] === this.headersData[j].value) {
+              filteredArrofObj.push(this.headersData[j]);
+            }
           }
         }
-        return filteredArr;
+        return filteredArrofObj;
       },
-      selectAll: function() {
-        this.selected = 1;
+      selectAll () {
+        if (this.selected.length < this.headersWithoutLastItem.length) {
+          let headerNamesArr = this.headersWithoutLastItem.map(function(item) { return item.value });
+          this.selected = headerNamesArr.slice();
+        }
+        else { this.selected = [] }
       }
-    }
+    },
+    watch: {}
   }
 </script>
 
