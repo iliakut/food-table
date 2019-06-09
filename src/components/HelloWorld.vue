@@ -1,12 +1,17 @@
 <template>
   <v-container>
     <h1>Table UI</h1>
+    <hr>
     <v-layout row wrap align-center justify-start>
       <b>Group by:</b>
       <v-flex v-for="item in headersData" :key="item.text" shrink>
         <v-btn color="primary"
                small
-               v-if="item.text !== ''">{{ item.text }}</v-btn>
+               class="text-none"
+               v-if="item.text !== ''"
+               @click="sortBy(item)">
+          <span class="caption">{{ item.text }}</span>
+        </v-btn>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex>
@@ -43,7 +48,7 @@
         :headers="selectedObj"
         :items="desserts"
         select-all
-        v-model="selected"
+        v-model="selectedDeserts"
         item-key="name"
       >
         <template v-slot:items="props">
@@ -61,17 +66,44 @@
           <td class="text-xs-left" v-if="selected.includes('protein')">{{ props.item.protein }}</td>
           <td class="text-xs-left" v-if="selected.includes('iron')">{{ props.item.iron }}</td>
           <td class="text-xs-left">
-            <v-btn flat small color="error"
-                   class="text-none hideButton"
-                   @click="deleteItem(props.item)">
-              <v-icon small>
-                delete
-              </v-icon>
-               Delete
-            </v-btn>
+            <v-menu
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn flat small color="error"
+                       class="text-none hideButton"
+                       v-on="on">
+                  <v-icon small>
+                    delete
+                  </v-icon>
+                  Delete
+                </v-btn>
+              </template>
+              <v-card>
+                <v-list>
+                  <v-list-tile>
+                    <v-list-tile-title>
+                      Are you sure you want to delete
+                      <b>{{ props.item.name }}</b>?
+                    </v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn flat>Cancel</v-btn>
+                  <v-btn color="error" flat @click="deleteDesert(props.item)">Confirm</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
           </td>
         </template>
       </v-data-table>
+    <v-layout justify-end>
+      <v-btn small
+             color="error text-none">
+        Delete ({{ selectedDeserts.length }})
+      </v-btn>
+    </v-layout>
+    <hr>
   </v-container>
 </template>
 
@@ -173,7 +205,8 @@
           iron: '6%'
         }
       ],
-      selected: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron']
+      selected: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron'],
+      selectedDeserts: []
     }),
     computed: {
       selectedObj: function() {
@@ -206,6 +239,15 @@
           this.selected = headerNamesArr.slice();
         }
         else { this.selected = [] }
+      },
+      sortBy(item) {
+        let index = this.selected.indexOf(item.value);
+        let deletedElem = this.selected.splice(index, 1);
+        this.selected.unshift(deletedElem[0]);
+      },
+      deleteDesert(desert) {
+        let indexOfDesert = this.desserts.indexOf(desert);
+        this.desserts.splice(indexOfDesert, 1);
       }
     },
     watch: {}
