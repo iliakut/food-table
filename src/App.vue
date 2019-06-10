@@ -16,9 +16,9 @@
           </v-btn>
         </v-alert>
       </div>
-      <div v-else >
-        <HelloWorld v-if="loaded"/>
-        <div class="text-xs-center"  v-else>
+      <div v-else>
+        <HelloWorld v-if="loaded" :desserts="products"/>
+        <div class="text-xs-center" v-else>
           <v-progress-circular
             :size="100"
             color="primary"
@@ -42,7 +42,7 @@ export default {
   },
   data: () => ({}),
   computed: {
-    ...mapState(["loaded", "errorFromServer"])
+    ...mapState(["loaded", "errorFromServer", "products"])
   },
   methods: {
     ...mapActions(["getData"])

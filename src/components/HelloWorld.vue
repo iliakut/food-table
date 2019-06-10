@@ -4,7 +4,7 @@
     <hr>
     <v-layout row wrap align-center justify-start>
       <b>Group by:</b>
-      <v-flex v-for="item in headersData" :key="item.text" shrink>
+      <v-flex v-for="(item, index) in headersData" :key="item.text + index" shrink>
         <v-btn color="primary"
                small
                class="text-none"
@@ -49,7 +49,7 @@
         :items="desserts"
         select-all
         v-model="selectedDeserts"
-        item-key="name"
+        item-key="id"
       >
         <template v-slot:items="props">
           <td>
@@ -77,7 +77,7 @@
                   <v-list-tile>
                     <v-list-tile-title>
                       Are you sure you want to delete
-                      <b>{{ props.item.name }}</b>?
+                      <b>{{ props.item.product }}</b>?
                     </v-list-tile-title>
                   </v-list-tile>
                 </v-list>
@@ -124,12 +124,18 @@
 <script>
 
   export default {
+    props: {
+      desserts: {
+        type: Array,
+        default: () => []
+      }
+    },
     data: () => ({
       headersData: [
         {
           text: 'Dessert (100g serving)',
           align: 'left',
-          value: 'name'
+          value: 'product'
         },
         { text: 'Calories', value: 'calories' },
         { text: 'Fat (g)', value: 'fat' },
@@ -138,7 +144,7 @@
         { text: 'Iron (%)', value: 'iron' },
         { text: '', value: '', sortable: false}
       ],
-      desserts: [
+      desserts1: [
         {
           name: 'Frozen Yogurt',
           calories: 159,
@@ -220,7 +226,7 @@
           iron: '6%'
         }
       ],
-      selected: ['name', 'calories', 'fat', 'carbs', 'protein', 'iron'],
+      selected: ['product', 'calories', 'fat', 'carbs', 'protein', 'iron'],
       selectedDeserts: []
     }),
     computed: {
