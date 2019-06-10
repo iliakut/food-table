@@ -19,7 +19,8 @@ export default new Vuex.Store({
   state: {
     products: [],
     errorFromServer: false,
-    loaded: false
+    loaded: false,
+    errorDeleting: false
   },
   mutations: {
     setProducts(state, payload) {
@@ -33,6 +34,9 @@ export default new Vuex.Store({
     },
     deleteProduct(state, payload) {
       state.products.splice(payload, 1);
+    },
+    setDeletingError(state, payload) {
+      state.errorDeleting = payload;
     }
   },
   actions: {
@@ -72,6 +76,7 @@ export default new Vuex.Store({
         })
         .catch((error) => {
           console.log(error);
+          commit("setDeletingError", true);
         });
     }
   }

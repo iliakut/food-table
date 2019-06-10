@@ -119,17 +119,19 @@
     </v-layout>
     <hr>
     <v-snackbar
-        v-model="test"
+        v-model="errorSnackbar"
         color="error"
-        multi-line
         :timeout="3000">
       server is not responding
+      <v-btn flat @click="errorSnackbar = false">
+        Close
+      </v-btn>
     </v-snackbar>
   </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
   export default {
     props: {
       desserts: {
@@ -138,7 +140,7 @@ import { mapActions } from 'vuex'
       }
     },
     data: () => ({
-      test: false,
+      errorSnackbar: false,
       headersData: [
         {
           text: 'Dessert (100g serving)',
@@ -165,7 +167,8 @@ import { mapActions } from 'vuex'
       selectAllIcon () {
         if (this.selected.length < 6) return 'check';
         else return 'close';
-      }
+      },
+      ...mapState(["errorDeleting"])
     },
     methods: {
       filterHeaders: function() {
@@ -205,7 +208,16 @@ import { mapActions } from 'vuex'
           this.desserts.splice(indexOfDesert, 1);
         }
       },
-      ...mapActions(["deleteProduct"])
+      ...mapActions(["deleteProduct"]),
+      ...mapMutations(["setDeletingError"])
+    },
+    watch: {
+      errorDeleting: function() {
+        this.errorSnackbar = true;
+      },
+      errorSnackbar: function() {
+        this.setDeletingError(false);
+      }
     }
   }
 </script>
