@@ -3,16 +3,17 @@
     <h1>Table UI</h1>
     <hr>
     <v-layout row wrap align-center justify-start>
-      <b>Group by:</b>
-      <v-flex v-for="(item, index) in headersData" :key="item.text + index" shrink>
-        <v-btn color="primary"
-               small
-               class="text-none"
-               v-if="item.text !== ''"
-               @click="sortBy(item)">
-          <span class="caption">{{ item.text }}</span>
-        </v-btn>
-      </v-flex>
+      <b>Group by: </b>
+      <v-btn-toggle mandatory>
+        <div v-for="(item, index) in headersData" :key="item.text + index">
+          <v-btn @click="sortBy(item)"
+                 v-if="item.text !== ''"
+                 class="text-none"
+                 color="primary">
+            <span> {{ item.text }}</span>
+          </v-btn>
+        </div>
+      </v-btn-toggle>
       <v-spacer></v-spacer>
       <v-flex>
         <v-select
