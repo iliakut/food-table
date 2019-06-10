@@ -60,7 +60,12 @@
               hide-details
             ></v-checkbox>
           </td>
-          <td class="text-xs-left" v-for="product in selected" :v-if="selected.includes('product')">{{ props.item[product] }}</td>
+          <td class="text-xs-left"
+              v-for="(product, productIndex) in selected"
+              :key="product + productIndex"
+              :v-if="selected.includes('product')">
+            {{ props.item[product] }}
+          </td>
           <td class="text-xs-left">
             <v-menu>
               <template v-slot:activator="{ on }">
