@@ -17,7 +17,7 @@
         </v-alert>
       </div>
       <div v-else>
-        <HelloWorld v-if="loaded" :desserts="products"/>
+        <ProductTable v-if="loaded" :desserts="products"/>
         <div class="text-xs-center" v-else>
           <v-progress-circular
             :size="100"
@@ -32,13 +32,13 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import ProductTable from './components/ProductTable'
 import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ProductTable
   },
   data: () => ({}),
   computed: {
