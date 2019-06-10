@@ -4,6 +4,17 @@ import { emulateGetRequest, emulateDeleteRequest } from './requests'
 //console.log(emulateGetRequest())
 //console.log(emulateDeleteRequest())
 
+// Также можно использовать async/await
+/*async function getData() {
+  try {
+    let data = await emulateGetRequest();
+    return data;
+  }
+  catch(err) {
+    console.log(err);
+  }
+}*/
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -36,6 +47,6 @@ export default new Vuex.Store({
           commit('setError', true );
           commit('setLoaded', true);
         })
-    }
+    },
   }
 })
