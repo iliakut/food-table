@@ -116,9 +116,15 @@
           </v-card-actions>
         </v-card>
       </v-menu>
-      <v-btn @click="test1(test)">test</v-btn>
     </v-layout>
     <hr>
+    <v-snackbar
+        v-model="test"
+        color="error"
+        multi-line
+        :timeout="3000">
+      server is not responding
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -132,6 +138,7 @@ import { mapActions } from 'vuex'
       }
     },
     data: () => ({
+      test: false,
       headersData: [
         {
           text: 'Dessert (100g serving)',

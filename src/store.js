@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { emulateGetRequest, emulateDeleteRequest } from './requests'
-//console.log(emulateGetRequest())
-//console.log(emulateDeleteRequest())
 
 // Также можно использовать async/await
 /*async function getData() {
@@ -52,22 +50,29 @@ export default new Vuex.Store({
         })
     },
     deleteProduct({ commit, state }, payload) {
-      if (toString.call(payload) === '[object Array]') {
-        for (let i = 0; i < payload.length; i++) {
-          for (let j = 0; j < state.products.length; j++) {
-            if (state.products[j].id === payload[i].id) {
-              commit("deleteProduct", j)
+      emulateDeleteRequest()
+        .then((success) => {
+          console.log(success);
+          if (toString.call(payload) === '[object Array]') {
+            for (let i = 0; i < payload.length; i++) {
+              for (let j = 0; j < state.products.length; j++) {
+                if (state.products[j].id === payload[i].id) {
+                  commit("deleteProduct", j);
+                }
+              }
             }
           }
-        }
-      }
-      else if (toString.call(payload) === '[object Object]') {
-        for (let j = 0; j < state.products.length; j++) {
-          if (state.products[j].id === payload.id) {
-            commit("deleteProduct", j)
+          else if (toString.call(payload) === '[object Object]') {
+            for (let j = 0; j < state.products.length; j++) {
+              if (state.products[j].id === payload.id) {
+                commit("deleteProduct", j)
+              }
+            }
           }
-        }
-      }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 })
