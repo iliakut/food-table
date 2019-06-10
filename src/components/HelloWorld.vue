@@ -146,7 +146,7 @@ import { mapActions, mapMutations, mapState } from 'vuex'
       }
     },
     data: () => ({
-      errorSnackbar: false,
+      errorSnackbar: false, // tag to show snackBar
       headersData: [
         {
           text: 'Dessert (100g serving)',
@@ -159,25 +159,30 @@ import { mapActions, mapMutations, mapState } from 'vuex'
         { text: 'Protein (g)', value: 'protein' },
         { text: 'Iron (%)', value: 'iron' },
         { text: '', value: '', sortable: false}
-      ],
-      selected: ['product', 'calories', 'fat', 'carbs', 'protein', 'iron'],
-      selectedDeserts: []
+      ], // default headers data with parameters
+      selected: ['product', 'calories', 'fat', 'carbs', 'protein', 'iron'], // selected headers data (which is shown)
+      selectedDeserts: [] // selected deserts to delete
     }),
     computed: {
       selectedObj: function() {
+        // make an arr from Objects from filtered headers arr
         return this.filterHeaders();
       },
       headersWithoutLastItem: function() {
+        // headers without last item - '' (which contains delete button)
         return this.headersData.slice(0, this.headersData.length - 1);
       },
       selectAllIcon () {
+        // toggle select all/select none icon
         if (this.selected.length < 6) return 'check';
         else return 'close';
       },
+      // errorDeleting - boolean from Vuex which sets to TRUE if deleting error
       ...mapState(["errorDeleting"])
     },
     methods: {
       filterHeaders: function() {
+        // filter headers Arr of Objects the same as sorted Arr
         let selectedHeadersWithDeleteColumn = this.selected.concat(['']);
         let filteredArrofObj = [];
         for (let i = 0; i < selectedHeadersWithDeleteColumn.length; i++) {
@@ -190,6 +195,7 @@ import { mapActions, mapMutations, mapState } from 'vuex'
         return filteredArrofObj;
       },
       selectAll () {
+        // select all columns
         if (this.selected.length < this.headersWithoutLastItem.length) {
           let headerNamesArr = this.headersWithoutLastItem.map(function(item) { return item.value });
           this.selected = headerNamesArr.slice();
@@ -197,31 +203,24 @@ import { mapActions, mapMutations, mapState } from 'vuex'
         else { this.selected = [] }
       },
       sortBy(item) {
+        // make item columns the first
         let index = this.selected.indexOf(item.value);
         if (index === -1) return;
         let deletedElem = this.selected.splice(index, 1);
         this.selected.unshift(deletedElem[0]);
       },
-      deleteDeserts(desert) {
-        if (toString.call(desert) === '[object Array]') {
-          for (let i = 0; i < desert.length; i++) {
-            let currentDesertIndex = this.desserts.indexOf(desert[i]);
-            this.desserts.splice(currentDesertIndex, 1);
-          }
-        }
-        else {
-          let indexOfDesert = this.desserts.indexOf(desert);
-          this.desserts.splice(indexOfDesert, 1);
-        }
-      },
+      // deleteProduct - call server to delete product
       ...mapActions(["deleteProduct"]),
+      // setDeletingError - set deleting error in Vuex
       ...mapMutations(["setDeletingError"])
     },
     watch: {
       errorDeleting: function() {
+        // if it is error on server call snackbar
         this.errorSnackbar = true;
       },
       errorSnackbar: function() {
+        // if snackbar finished set deletingError on server to false
         this.setDeletingError(false);
       }
     }

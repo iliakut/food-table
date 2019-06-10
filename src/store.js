@@ -17,10 +17,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    products: [],
-    errorFromServer: false,
-    loaded: false,
-    errorDeleting: false
+    products: [], // products from JSON
+    errorFromServer: false, // error loading data from JSON
+    loaded: false, // sets if JSON data loaded
+    errorDeleting: false // error deleting
   },
   mutations: {
     setProducts(state, payload) {
@@ -41,6 +41,7 @@ export default new Vuex.Store({
   },
   actions: {
     getData({ commit }) {
+      // get data from JSON
       emulateGetRequest()
         .then((success) => {
           commit('setProducts', success);
@@ -54,9 +55,13 @@ export default new Vuex.Store({
         })
     },
     deleteProduct({ commit, state }, payload) {
+      // delete data from JSON (not exactly)
       emulateDeleteRequest()
         .then((success) => {
           console.log(success);
+          // if success start searching and deleting data in products
+
+          // if we want to delete several products
           if (toString.call(payload) === '[object Array]') {
             for (let i = 0; i < payload.length; i++) {
               for (let j = 0; j < state.products.length; j++) {
@@ -66,6 +71,7 @@ export default new Vuex.Store({
               }
             }
           }
+          // if we want to delete one product
           else if (toString.call(payload) === '[object Object]') {
             for (let j = 0; j < state.products.length; j++) {
               if (state.products[j].id === payload.id) {
