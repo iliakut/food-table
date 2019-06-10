@@ -59,12 +59,7 @@
               hide-details
             ></v-checkbox>
           </td>
-          <td class="text-xs-left" v-if="selected.includes('name')">{{ props.item.name }}</td>
-          <td class="text-xs-left" v-if="selected.includes('calories')">{{ props.item.calories }}</td>
-          <td class="text-xs-left" v-if="selected.includes('fat')">{{ props.item.fat }}</td>
-          <td class="text-xs-left" v-if="selected.includes('carbs')">{{ props.item.carbs }}</td>
-          <td class="text-xs-left" v-if="selected.includes('protein')">{{ props.item.protein }}</td>
-          <td class="text-xs-left" v-if="selected.includes('iron')">{{ props.item.iron }}</td>
+          <td class="text-xs-left" v-for="product in selected" :v-if="selected.includes('product')">{{ props.item[product] }}</td>
           <td class="text-xs-left">
             <v-menu>
               <template v-slot:activator="{ on }">
@@ -262,6 +257,7 @@
       },
       sortBy(item) {
         let index = this.selected.indexOf(item.value);
+        if (index === -1) return;
         let deletedElem = this.selected.splice(index, 1);
         this.selected.unshift(deletedElem[0]);
       },
