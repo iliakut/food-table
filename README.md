@@ -1,4 +1,6 @@
 # food-table
+the app loads data from products.json. The component ProductTable gets this data as a prop. You can get error during loading data. You can delete data from table and also can get error during deleting. 
+The app uses Vue + Vuex + Vuetify. 
 
 ## Project setup
 ```
@@ -13,11 +15,6 @@ yarn run serve
 ### Compiles and minifies for production
 ```
 yarn run build
-```
-
-### Run your tests
-```
-yarn run test
 ```
 
 ### Lints and fixes files
