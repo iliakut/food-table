@@ -4,7 +4,7 @@
     <hr>
     <v-layout row wrap align-center justify-start>
       <b>Group by: </b>
-      <v-btn-toggle mandatory>
+<!--      <v-btn-toggle mandatory max="1%">
         <div v-for="(item, index) in headersData" :key="item.text + index">
           <v-btn @click="sortBy(item)"
                  v-if="item.text !== ''"
@@ -13,7 +13,20 @@
             <span> {{ item.text }}</span>
           </v-btn>
         </div>
-      </v-btn-toggle>
+      </v-btn-toggle>-->
+      <v-layout justify-start row wrap>
+        <v-flex v-for="(item, index) in headersData" :key="item.text + index" shrink>
+          <v-btn  class="text-none pa-1 ml-1"
+                  :color="(selected[0] !== item.value)? 'black': 'primary'"
+                  small
+                  align-self-start
+                  :flat="selected[0] !== item.value"
+                  v-if="item.text !== ''"
+                  @click="sortBy(item)">
+            <span class="font-weight-light">{{ item.text }}</span>
+          </v-btn>
+        </v-flex>
+      </v-layout>
       <v-spacer></v-spacer>
       <v-flex>
         <v-select
@@ -53,48 +66,50 @@
         item-key="id"
       >
         <template v-slot:items="props">
-          <td>
-            <v-checkbox
-              v-model="props.selected"
-              primary
-              hide-details
-            ></v-checkbox>
-          </td>
-          <td class="text-xs-left"
-              v-for="(product, productIndex) in selected"
-              :key="product + productIndex"
-              :v-if="selected.includes('product')">
-            {{ props.item[product] }}
-          </td>
-          <td class="text-xs-left">
-            <v-menu>
-              <template v-slot:activator="{ on }">
-                <v-btn flat small color="error"
-                       class="text-none hideButton"
-                       v-on="on">
-                  <v-icon small>
-                    delete
-                  </v-icon>
-                  Delete
-                </v-btn>
-              </template>
-              <v-card>
-                <v-list>
-                  <v-list-tile>
-                    <v-list-tile-title>
-                      Are you sure you want to delete
-                      <b>{{ props.item.product }}</b>?
-                    </v-list-tile-title>
-                  </v-list-tile>
-                </v-list>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn flat>Cancel</v-btn>
-                  <v-btn color="error" flat @click="deleteProduct(props.item)">Confirm</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-menu>
-          </td>
+          <tr :active="props.selected" @click="props.selected = !props.selected">
+            <td>
+              <v-checkbox
+                  v-model="props.selected"
+                  primary
+                  hide-details
+              ></v-checkbox>
+            </td>
+            <td class="text-xs-left"
+                v-for="(product, productIndex) in selected"
+                :key="product + productIndex"
+                :v-if="selected.includes('product')">
+              {{ props.item[product] }}
+            </td>
+            <td class="text-xs-left">
+              <v-menu>
+                <template v-slot:activator="{ on }">
+                  <v-btn flat small color="error"
+                         class="text-none hideButton"
+                         v-on="on">
+                    <v-icon small>
+                      delete
+                    </v-icon>
+                    Delete
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list>
+                    <v-list-tile>
+                      <v-list-tile-title>
+                        Are you sure you want to delete
+                        <b>{{ props.item.product }}</b>?
+                      </v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn flat>Cancel</v-btn>
+                    <v-btn color="error" flat @click="deleteProduct(props.item)">Confirm</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
+            </td>
+          </tr>
         </template>
       </v-data-table>
     <v-layout justify-end>
@@ -102,9 +117,10 @@
       >
         <template v-slot:activator="{ on }">
           <v-btn small
-                 color="error text-none"
-                 v-on="on">
-            Delete ({{ selectedDeserts.length }})
+                 color="error"
+                 v-on="on"
+                 :disabled="selectedDeserts.length === 0">
+            Delete <span v-if="selectedDeserts.length !== 0">({{ selectedDeserts.length }})</span>
           </v-btn>
         </template>
         <v-card>
@@ -238,6 +254,9 @@ import { mapActions, mapMutations, mapState } from 'vuex'
     -webkit-transition: 0s !important;
   }
   tr:hover .hideButton {
-    visibility: visible
+    visibility: visible;
+  }
+  tr {
+    cursor: pointer;
   }
 </style>
